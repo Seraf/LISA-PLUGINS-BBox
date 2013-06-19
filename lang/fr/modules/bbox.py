@@ -6,6 +6,7 @@ from pysnmp.carrier.asynsock.dgram import udp
 from pyasn1.codec.ber import encoder, decoder
 from pysnmp.proto import api
 from time import time, sleep
+from jarvis import configuration
 
 class SNMP:
     def __init__(self):
@@ -67,7 +68,7 @@ class SNMP:
 
 class BBox:
     def __init__(self):
-        self.configuration_jarvis = json.load(open('Configuration/jarvis.json'))
+        self.configuration_jarvis = configuration
         mongo = MongoClient(self.configuration_jarvis['database']['server'], \
                             self.configuration_jarvis['database']['port'])
         self.configuration = mongo.jarvis.plugins.find_one({"name": "BBox"})

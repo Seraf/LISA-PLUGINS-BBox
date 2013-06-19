@@ -1,6 +1,6 @@
 {
     "name": "BBox",
-    "version": "1.0",
+    "version": "1.0.1",
     "author": "Julien Syx",
     "description_fr": "Ce plugin permet de contrôler la BBox, de changer les chaînes, le volume, enregistrer, etc.",
     "enabled": 1,
