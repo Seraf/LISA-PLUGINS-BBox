@@ -22,47 +22,22 @@
 - <call>pause_channel <star></call>
 
 > object change_channel python
-import sys, os, inspect
-cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split( \
-    inspect.getfile(inspect.currentframe()))[0],os.path.normpath("Plugins/BBox/modules/"))))
-if cmd_subfolder not in sys.path:
-    sys.path.insert(0, cmd_subfolder)
-
-from bbox import BBox
+from BBox.modules.bbox import BBox
 return BBox().change_channel(args)
-#return BBox().change_channel("quatre")
 < object
 
 > object change_volume python
-import sys, os, inspect
-cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split( \
-    inspect.getfile(inspect.currentframe()))[0],os.path.normpath("Plugins/BBox/modules/"))))
-if cmd_subfolder not in sys.path:
-    sys.path.insert(0, cmd_subfolder)
-
-from bbox import BBox
+from BBox.modules.bbox import BBox
 return BBox().change_volume(args)
 < object
 
 > object rec_channel python
-import sys, os, inspect
-cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split( \
-    inspect.getfile(inspect.currentframe()))[0],os.path.normpath("Plugins/BBox/modules/"))))
-if cmd_subfolder not in sys.path:
-    sys.path.insert(0, cmd_subfolder)
-
-from bbox import BBox
+from BBox.modules.bbox import BBox
 return BBox().rec_channel(args)
 < object
 
 > object pause_channel python
-import sys, os, inspect
-cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split( \
-    inspect.getfile(inspect.currentframe()))[0],os.path.normpath("Plugins/BBox/modules/"))))
-if cmd_subfolder not in sys.path:
-    sys.path.insert(0, cmd_subfolder)
-
-from bbox import BBox
+from BBox.modules.bbox import BBox
 if args:
     return BBox().pause_channel(args)
 else:
