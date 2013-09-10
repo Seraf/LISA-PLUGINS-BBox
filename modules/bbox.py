@@ -75,130 +75,97 @@ class SNMP:
 class BBox:
     def __init__(self):
         self.configuration_lisa = configuration
-        mongo = MongoClient(self.configuration_lisa['database']['server'],
+        self.mongo = MongoClient(self.configuration_lisa['database']['server'],
                             self.configuration_lisa['database']['port'])
-        self.configuration = mongo.lisa.plugins.find_one({"name": "BBox"})
+        self.configuration = self.mongo.lisa.plugins.find_one({"name": "BBox"})
         self.snmp = SNMP()
+        self.answer = ""
         self.chaines = {
-            "une": ["50"],
-            "deux": ["51"],
-            "trois": ["52"],
-            "quatre": ["53"],
-            "cinq": ["54"],
-            "six": ["55"],
-            "sept": ["56"],
-            "huit": ["57"],
-            "neuf": ["58"],
-            "dix": ["50","59"],
-            "onze": ["50","50"],
-            "douze": ["50","51"],
-            "suivante": ["25"],
-            "précédente": ["26"],
-            "precedente": ["26"]
-        }
-        self.actions = {
-            "augmente": ["27"],
-            "augmenter": ["27"],
-            "monte": ["27"],
-            "monter": ["27"],
-            "baisse": ["28"],
-            "baisser": ["28"],
-            "descend": ["28"],
-            "descendre": ["28"]
+            "1": ["50"],
+            "2": ["51"],
+            "3": ["52"],
+            "4": ["53"],
+            "5": ["54"],
+            "6": ["55"],
+            "7": ["56"],
+            "8": ["57"],
+            "9": ["58"],
+            "10": ["50","59"],
+            "11": ["50","50"],
+            "12": ["50","51"],
+            "13": ["50","52"],
+            "14": ["50","53"],
+            "next": ["25"],
+            "previous": ["26"]
         }
 
-    def change_channel(self, args):
-        number = str(args[0]).strip()
-        for chaine in self.chaines[number]:
-            self.snmp.send( host=str(self.configuration['configuration']['ip']),
-                            community=str(self.configuration['configuration']['community']),
-                            oid=str(self.configuration['configuration']['oid']),
-                            value=str(chaine)
-            )
-        return json.dumps({ "plugin": "BBox","method": "change_channel",
-                            "body": _('channel_changed')})
+        self.volume_actions = {
+            "up": ["27"],
+            "down": ["28"]
+        }
 
-    def change_volume(self, args):
-        action = str(args[0]).strip()
-        for order in self.actions[action]:
-            self.snmp.send( host=str(self.configuration['configuration']['ip']),
-                            community=str(self.configuration['configuration']['community']),
-                            oid=str(self.configuration['configuration']['oid']),
-                            value=str(order)
-            )
-        if order == "27":
-            body = _('increased')
-        else:
-            body = _('decreased')
-        return json.dumps({ "plugin": "BBox","method": "change_volume",
-                            "body": _('Volume') + ' ' + body})
-
-    def rec_channel(self, args):
-        # Should review the record, the best should be to record from an hour to another hour
-        # instead of using the record built by Bouygues
-        number = str(args[0]).strip()
-        if number == _('this'):
-            #Send REC
-            self.snmp.send( host=str(self.configuration['configuration']['ip']),
-                            community=str(self.configuration['configuration']['community']),
-                            oid=str(self.configuration['configuration']['oid']),
-                            value=str("24")
-            )
-            sleep(2)
-            #Send OK
-            self.snmp.send( host=str(self.configuration['configuration']['ip']),
-                            community=str(self.configuration['configuration']['community']),
-                            oid=str(self.configuration['configuration']['oid']),
-                            value=str("7")
-            )
-            return json.dumps({ "plugin": "BBox","method": "rec_channel",
-                                "body": _('recording_channel') + ' ' + _('ongoing')})
-        else:
-            for chaine in self.chaines[number]:
-                self.snmp.send( host=str(self.configuration['configuration']['ip']),
-                                community=str(self.configuration['configuration']['community']),
-                                oid=str(self.configuration['configuration']['oid']),
-                                value=str(chaine)
-            )
-            sleep(3)
-            # Enregistrement
-            #Send REC
-            self.snmp.send( host=str(self.configuration['configuration']['ip']),
-                            community=str(self.configuration['configuration']['community']),
-                            oid=str(self.configuration['configuration']['oid']),
-                            value=str("24")
-            )
-            sleep(2)
-            #Send OK
-            self.snmp.send( host=str(self.configuration['configuration']['ip']),
-                            community=str(self.configuration['configuration']['community']),
-                            oid=str(self.configuration['configuration']['oid']),
-                            value=str("7")
-            )
-            return json.dumps({ "plugin": "BBox","method": "rec_channel",
-                                "body": _('recording_channel') + number + _('ongoing') })
-
-    def pause_channel(self, args=None):
+    def channel(self, jsonInput):
+        #Send a stop to return to the live
         self.snmp.send( host=str(self.configuration['configuration']['ip']),
                         community=str(self.configuration['configuration']['community']),
                         oid=str(self.configuration['configuration']['oid']),
                         value=str("20")
         )
-        sleep(2)
-        if args:
-            number = str(args[0]).strip()
+        sleep(1)
+        print jsonInput['outcome']
+        number = jsonInput['outcome']['entities']['bbox_chaine']['value']
+
+        if number:
             for chaine in self.chaines[number]:
                 self.snmp.send( host=str(self.configuration['configuration']['ip']),
                                 community=str(self.configuration['configuration']['community']),
                                 oid=str(self.configuration['configuration']['oid']),
                                 value=str(chaine)
                 )
-            sleep(6)
+        if jsonInput['outcome']['entities']['bbox_action_channel']['value'] == "pause":
+            sleep(8)
+            self.snmp.send( host=str(self.configuration['configuration']['ip']),
+                            community=str(self.configuration['configuration']['community']),
+                            oid=str(self.configuration['configuration']['oid']),
+                            value=str("23")
+            )
+            self.answer = _('channel_pausing')
+        elif jsonInput['outcome']['entities']['bbox_action_channel']['value'] == "record":
+            #Send REC
+            self.snmp.send( host=str(self.configuration['configuration']['ip']),
+                            community=str(self.configuration['configuration']['community']),
+                            oid=str(self.configuration['configuration']['oid']),
+                            value=str("24")
+            )
+            sleep(2)
+            #Send OK
+            self.snmp.send( host=str(self.configuration['configuration']['ip']),
+                            community=str(self.configuration['configuration']['community']),
+                            oid=str(self.configuration['configuration']['oid']),
+                            value=str("7")
+            )
+            self.answer = _('channel_recording')
+        else:
+            self.answer = _('channel_changed')
+        return {"plugin": "BBox",
+                "method": "channel",
+                "body": self.answer
+        }
 
-        self.snmp.send( host=str(self.configuration['configuration']['ip']),
-                        community=str(self.configuration['configuration']['community']),
-                        oid=str(self.configuration['configuration']['oid']),
-                        value=str("23")
-        )
-        return json.dumps({ "plugin": "BBox","method": "pause_channel",
-                            "body": _('pause_channel')})
+    def volume(self, jsonInput):
+        action = jsonInput['outcome']['entities']['bbox_action_volume']['value']
+        for order in self.volume_actions[action]:
+            self.snmp.send( host=str(self.configuration['configuration']['ip']),
+                            community=str(self.configuration['configuration']['community']),
+                            oid=str(self.configuration['configuration']['oid']),
+                            value=str(order)
+            )
+        if action == "up":
+            self.answer = ' '.join([_('Volume'),_('increased')])
+        else:
+            self.answer = ' '.join([_('Volume'),_('decreased')])
+
+        return {"plugin": "BBox",
+                "method": "volume",
+                "body": self.answer
+        }

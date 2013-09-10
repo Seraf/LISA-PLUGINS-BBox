@@ -1,6 +1,6 @@
 {
     "name": "BBox",
-    "version": "1.0.13",
+    "version": "1.2.1",
     "author": "Julien Syx",
     "description": [
         {"lang": "fr", "description": "Ce plugin permet de contrôler la BBox, de changer les chaînes, le volume, enregistrer, etc."}
@@ -8,8 +8,21 @@
     "enabled": 1,
     "lang": ["fr"],
     "configuration": {
-        "ip": "192.168.1.1",
+        "ip": "192.168.1.7",
         "oid": "1.3.6.1.4.1.8711.101.13.1.3.28.0",
-        "community": "public"
+        "community": "public",
+        "intents": {
+            "bbox_channel": {
+                "method": "channel",
+                "corpus": {}
+            },
+            "bbox_volume": {
+                "method": "volume",
+                "corpus": {}
+            }
+        },
+        "widgets": {
+            "getTime": "ChatterBot.web.views.widget1"
+        }
     }
 }

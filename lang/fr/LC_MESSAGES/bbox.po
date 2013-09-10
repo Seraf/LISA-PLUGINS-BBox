@@ -24,14 +24,11 @@ msgstr "baissé"
 msgid "Volume"
 msgstr "Volume"
 
-msgid "this"
-msgstr "cette"
-
-msgid "recording_channel"
+msgid "channel_recording"
 msgstr "Enregistrement en cours de la chaîne"
 
 msgid "ongoing"
 msgstr "en cours"
 
-msgid "pause_channel"
+msgid "channel_pausing"
 msgstr "Chaine mise en pause"
