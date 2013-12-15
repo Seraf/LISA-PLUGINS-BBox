@@ -73,7 +73,7 @@ class SNMP:
         transportDispatcher.closeDispatcher()
 
 class BBox:
-    def __init__(self, lisa):
+    def __init__(self, lisa=None):
         self.lisa = lisa
         self.configuration_lisa = configuration
         self.mongo = MongoClient(self.configuration_lisa['database']['server'],
