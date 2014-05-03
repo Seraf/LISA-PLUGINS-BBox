@@ -1,0 +1,3 @@
+include requirements.txt
+recursive-include lisa *.rst *.py *.json *.mo *.po
+prune *.pyc

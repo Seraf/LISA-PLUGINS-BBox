@@ -6,10 +6,10 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import os,json
 
-from weblisa.utils import method_restricted_to, is_ajax
-from weblisa.settings import LISA_PATH
+from lisa.server.web.weblisa.utils import method_restricted_to, is_ajax
+from lisa.server.web.weblisa.settings import LISA_PATH
 
-from BBox.modules.bbox import BBox
+from lisa.plugins.BBox.modules.bbox import BBox
 
 # Template system will be fixed with Django 1.7. Each plugin will be able to have his own templates
 @login_required()

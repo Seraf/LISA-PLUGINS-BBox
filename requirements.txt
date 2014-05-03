@@ -1,0 +1,4 @@
+Django>=1.6.2
+django-tastypie>=0.11.0
+pysnmp
+lisa-server
