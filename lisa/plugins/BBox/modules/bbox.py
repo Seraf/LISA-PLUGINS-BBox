@@ -76,6 +76,7 @@ class BBox(IPlugin):
             inspect.getfile(inspect.currentframe()))[0],os.path.normpath("../lang/"))))
         self._ = translation = gettext.translation(domain='bbox',
                                                    localedir=self.path,
+                                                   fallback=True,
                                                    languages=[self.configuration_lisa['lang']]).ugettext
         self.configuration_plugin = self.mongo.lisa.plugins.find_one({"name": "BBox"})
         self.snmp = SNMP()
