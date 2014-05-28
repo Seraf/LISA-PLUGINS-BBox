@@ -17,7 +17,7 @@ if __name__ == '__main__':
         author_email='julien.syx@gmail.com',
         description='LISA home automation system - Server',
         include_package_data=True,
-        namespace_packages=['lisa'],
+        namespace_packages=['lisa.plugins'],
         install_requires=listify('requirements.txt'),
         classifiers=[
             'Development Status :: 4 - Beta',
