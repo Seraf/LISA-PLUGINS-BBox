@@ -1,4 +1,4 @@
-Django>=1.6.2
+Django>=1.6.2,<1.7
 django-tastypie>=0.11.0
 pysnmp
 lisa-server
